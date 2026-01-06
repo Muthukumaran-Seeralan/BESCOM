@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISCOM AI | Smart Electricity Bill Payment</title>
+    <meta name="description"
+        content="Securely scan and pay BESCOM electricity bills using Comet AI Vision and intelligent browser navigation.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="zap" fill="currentColor"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>DISCOM<span>AI</span></h1>
+                    <p>Bill-to-Payment Intelligence</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="status-badge" id="ai-status">
+                    <span class="pulse"></span> Comet AI Vision Active
+                </span>
+            </div>
+        </header>
+
+        <!-- Multi-Step Indicator -->
+        <div class="stepper">
+            <div class="step active" id="step-1-indicator">
+                <div class="step-num">1</div>
+                <span>Upload Bill</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-2-indicator">
+                <div class="step-num">2</div>
+                <span>AI Scan</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-3-indicator">
+                <div class="step-num">3</div>
+                <span>Confirm ID</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-4-indicator">
+                <div class="step-num">4</div>
+                <span>Secure Pay</span>
+            </div>
+        </div>
+
+        <main>
+            <!-- STAGE 1: UPLOAD -->
+            <section class="upload-section" id="upload-section">
+                <div class="upload-card" id="drop-zone">
+                    <input type="file" id="bill-input" accept="image/*" capture="environment" hidden>
+                    <label for="bill-input" class="upload-label">
+                        <div class="icon-stack">
+                            <i data-lucide="camera" class="cam-icon"></i>
+                            <i data-lucide="upload-cloud" class="up-icon"></i>
+                        </div>
+                        <h3>Scan Your BESCOM Bill</h3>
+                        <p>Upload a clear photo of your electricity bill. Comet AI Vision will automatically extract
+                            your 10-digit Account ID.</p>
+                        <div class="discom-cloud">
+                            <span>BESCOM</span> <span>TNEB</span> <span>BSES</span> <span>PSPCL</span>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- STAGE 2: SCANNING (OCR) -->
+            <section class="scanner-status hidden" id="status-section">
+                <div class="status-card">
+                    <div class="image-preview-container">
+                        <img id="image-preview" src="" alt="Bill Preview">
+                        <div class="scanning-line"></div>
+                        <div class="ai-overlay">
+                            <span class="ai-node" style="top:25%; left:35%;"></span>
+                            <span class="ai-node" style="top:55%; left:65%;"></span>
+                            <span class="ai-node" style="top:75%; left:45%;"></span>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="progress-label">Comet AI Vision analyzing layout...</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-fill" id="progress-bar"></div>
+                        </div>
+                        <p class="ai-msg" id="ai-insight">Extracting Account ID Signature...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 3: VERIFICATION -->
+            <section class="results-grid hidden" id="results-section">
+                <div class="result-header">
+                    <div class="header-icon"><i data-lucide="id-card" size="32"></i></div>
+                    <h2>Verify Your Account ID</h2>
+                    <p>We've detected the following 10-digit BESCOM Account ID.</p>
+                </div>
+
+                <div class="account-verification-card">
+                    <label
+                        style="color: var(--text-dim); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;">Detected
+                        Account ID</label>
+                    <div class="id-input-wrapper">
+                        <input type="text" id="val-account" placeholder="0000000000" maxlength="10"
+                            class="big-id-input">
+                        <button class="copy-id-btn" id="copy-id-btn" title="Copy ID">
+                            <i data-lucide="copy"></i>
+                        </button>
+                    </div>
+                    <div class="verified-tag" id="validation-msg"
+                        style="margin-top: 1.5rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i data-lucide="check-circle" size="18"></i> Format Validated
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-ghost" id="reset-btn">
+                        <i data-lucide="refresh-cw"></i> Re-scan
+                    </button>
+                    <button class="btn-primary" id="proceed-to-portal">
+                        Proceed to BESCOM Portal <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="security-box"
+                    style="margin-top: 3rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 20px; padding: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <i data-lucide="lock" style="color: var(--primary); flex-shrink: 0;"></i>
+                    <div class="security-text">
+                        <h4 style="margin-bottom: 0.5rem; font-size: 1rem;">Government Payment Compliance</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">To ensure maximum
+                            security, payment steps like <strong>CAPTCHA</strong> and <strong>OTP</strong> are completed
+                            exclusively on the official BESCOM portal. We've copied your Account ID for a seamless
+                            experience.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 4: REDIRECTING -->
+            <section class="loading-section hidden" id="redirect-section">
+                <div class="redirect-card">
+                    <div class="loader-ring"></div>
+                    <h2 style="margin-bottom: 1rem;">Launching Official Portal</h2>
+                    <p style="color: var(--text-dim); margin-bottom: 2rem;">Redirecting you to BESCOM Quick Payment
+                        page...</p>
+
+                    <div class="guidance-list">
+                        <div class="guide-item">
+                            <div class="g-num">1</div>
+                            <p><strong>Paste</strong> Account ID</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="g-num">2</div>
+                            <p>Solve <strong>CAPTCHA</strong></p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="g-num">3</div>
+                            <p>Complete <strong>Payment</strong></p>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 2rem;">Timer: <span
+                            id="timer-dots">...</span></p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div style="margin-bottom: 1rem; display: flex; justify-content: center; gap: 2rem;">
+                <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;"><i
+                        data-lucide="shield-check" size="16"></i> Secure Scan</span>
+                <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;"><i data-lucide="globe"
+                        size="16"></i> Official Gateway</span>
+            </div>
+            <p>&copy; 2026 DISCOM AI. Powered by Comet Browser AI.</p>
+        </footer>
+    </div>
+
+    <!-- Tesseract.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>
